@@ -19,7 +19,9 @@ resource "aws_db_instance" "rds_Instance" {
   parameter_group_name   = "default.mysql8.0"
   skip_final_snapshot    = true
   blue_green_update {
-    
+    parameter_group_name = aws_db_parameter_group.blue_green_parameter_group.id
+    engine = "mysql"
+    engine_version = "8.0"
   }
 }
 
