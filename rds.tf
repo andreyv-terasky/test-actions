@@ -19,10 +19,10 @@ resource "aws_db_instance" "rds_Instance" {
   parameter_group_name   = "default.mysql8.0"
   skip_final_snapshot    = true
   blue_green_update {
-    blue-green-deployment-name = "blue-green"
-    source = aws_db_instance.rds_Instance.id
-    target-engine-version = "8.0.28"
-    target-db-parameter-group-name = aws_db_parameter_group.blue_green_parameter_group.id
+    BlueGreenDeploymentIdentifier = "blue-green"
+    Source = aws_db_instance.rds_Instance.id
+    TargetEngineVersion = "8.0.28"
+    TargetDBParameterGroupName = aws_db_parameter_group.blue_green_parameter_group.id
 }
 }
 
