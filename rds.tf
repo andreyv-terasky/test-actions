@@ -18,7 +18,9 @@ resource "aws_db_instance" "rds_Instance" {
   password               = "!Andrey1989"
   parameter_group_name   = "default.mysql8.0"
   skip_final_snapshot    = true
-  blue_green_update = true
+  blue_green_update {
+    
+  }
 }
 
 
