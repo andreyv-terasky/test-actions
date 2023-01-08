@@ -21,3 +21,19 @@ resource "aws_db_parameter_group" "blue_green_parameter_group" {
 #   skip_final_snapshot    = true
 #   vpc_security_group_ids = [aws_security_group.rds_sg.id]
 # }
+
+
+
+module "db" {
+  source = "terraform-aws-modules/rds/aws"
+  identifier = "testdbbluegreen"
+  engine = "mysql"
+  engine_version = "8.0"
+  instance_class         = "db.t3.micro"
+  allocated_storage      = 10
+  max_allocated_storage  = 20
+  db_name = "testdbbluegreen"
+  username = "admin"
+  password = "!Andrey1989"
+  parameter_group_name = aws_db_parameter_group.blue_green_parameter_group.id
+}
