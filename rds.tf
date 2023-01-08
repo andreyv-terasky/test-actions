@@ -19,9 +19,12 @@ resource "aws_db_instance" "rds_Instance" {
   parameter_group_name   = "default.mysql8.0"
   skip_final_snapshot    = true
   blue_green_update {
-    
+
   }
 
+}
+output "name" {
+  value = aws_db_instance.rds_Instance.blue_green_update
 }
 
 
