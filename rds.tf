@@ -24,6 +24,7 @@ resource "aws_db_instance" "rds_Instance" {
     target-engine-version = "8.0.28"
     target-db-parameter-group-name = aws_db_parameter_group.blue_green_parameter_group.id
 }
+}
 
 
 
