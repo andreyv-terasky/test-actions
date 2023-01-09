@@ -28,14 +28,14 @@ output "name" {
 }
 
 
-# resource "null_resource" "blue_green_update" {
-#   provisioner "remote-exec" {
-#     command = "aws rds create-blue-green-deployment \
-#     --blue-green-deployment-name my-blue-green-deployment \
-#     --source arn:aws:rds:us-east-2:123456789012:db:mydb1 \
-#     --target-engine-version 8.0.31 \
-#     --target-db-parameter-group-name mydbparametergroup"
-#   }
-# }
+resource "null_resource" "blue_green_update" {
+  provisioner "remote-exec" {
+    command = "aws rds create-blue-green-deployment \
+    --blue-green-deployment-name my-blue-green-deployment \
+    --source arn:aws:rds:eu-west-2:113265635309:db:terraform-20230109122215719500000001 \
+    --target-engine-version 8.0.28 \
+    --target-db-parameter-group-name default.mysql8.0"
+  }
+}
 
 
