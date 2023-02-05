@@ -55,7 +55,7 @@ output "created_blue_green_deployment" {
 resource "aws_ssm_parameter" "foo" {
   name  = "blue-green-deployment"
   type  = "StringList"
-  value = null_resource.name.triggers
+  value = ["${null_resource.name.triggers}"]
 }
 
 # # Describe  blue green deployment
