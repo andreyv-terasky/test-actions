@@ -9,7 +9,13 @@ locals {
   output                = "json"
   BlueGreenDeploymentIdentifier = "bgd-ihbyha9rqggbcqpa"
 }
+# Create Parameter Store
 
+resource "aws_ssm_parameter" "foo" {
+  name  = "blue-green-deployment"
+  type  = "String"
+  value = "bar"
+}
 
 # resource "aws_db_instance" "default" {
 #   allocated_storage       = 10
