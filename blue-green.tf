@@ -52,11 +52,11 @@ output "created_blue_green_deployment" {
 
 # Create Parameter Store
 
-resource "aws_ssm_parameter" "foo" {
-  name  = "blue-green-deployment"
-  type  = "StringList"
-  value = ["${null_resource.name.triggers}"]
-}
+# resource "aws_ssm_parameter" "foo" {
+#   name  = "blue-green-deployment"
+#   type  = "StringList"
+#   value = 
+# }
 
 # # Describe  blue green deployment
 
