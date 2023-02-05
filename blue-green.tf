@@ -9,49 +9,54 @@ locals {
   output                = "json"
   BlueGreenDeploymentIdentifier = "bgd-ihbyha9rqggbcqpa"
 }
+
+
+resource "aws_db_instance" "default" {
+  allocated_storage       = 10
+  db_name                 = "mydb"
+  engine                  = "mysql"
+  engine_version          = "5.7"
+  instance_class          = "db.t3.micro"
+  username                = "admin"
+  password                = "Andrey90!"
+  parameter_group_name    = "default.mysql5.7"
+  skip_final_snapshot     = true
+  backup_retention_period = 1
+  backup_window           = "09:00-10:00"
+  blue_green_update {
+    enabled = true
+  }
+}
+
+Create Blue Green Deployment
+
+resource "null_resource" "name" {
+  depends_on = [
+    aws_db_instance.default
+  ]
+  provisioner "local-exec" {
+    command = "aws rds create-blue-green-deployment --blue-green-deployment-name $f_blue_green_name --source $f_source_db --target-db-parameter-group-name $f_target_db_parameter_group --output $f_output --region $f_region"
+    environment = {
+      f_blue_green_name           = local.blue-green-deployment-name
+      f_source_db                 = aws_db_instance.default.arn
+      f_target_db_parameter_group = aws_db_instance.default.parameter_group_name
+      f_region                    = local.region
+      f_output                    = local.output
+    }
+  }
+}
+
+output "created_blue_green_deployment" {
+  value = null_resource.name.triggers
+}
+
 # Create Parameter Store
 
 resource "aws_ssm_parameter" "foo" {
   name  = "blue-green-deployment"
-  type  = "String"
-  value = "bar"
+  type  = "StringList"
+  value = null_resource.name.triggers
 }
-
-# resource "aws_db_instance" "default" {
-#   allocated_storage       = 10
-#   db_name                 = "mydb"
-#   engine                  = "mysql"
-#   engine_version          = "5.7"
-#   instance_class          = "db.t3.micro"
-#   username                = "admin"
-#   password                = "Andrey90!"
-#   parameter_group_name    = "default.mysql5.7"
-#   skip_final_snapshot     = true
-#   backup_retention_period = 1
-#   backup_window           = "09:00-10:00"
-#   blue_green_update {
-#     enabled = true
-#   }
-# }
-
-# Create Blue Green Deployment
-
-# resource "null_resource" "name" {
-#   provisioner "local-exec" {
-#     command = "aws rds create-blue-green-deployment --blue-green-deployment-name $f_blue_green_name --source $f_source_db --target-db-parameter-group-name $f_target_db_parameter_group --output $f_output --region $f_region"
-#     environment = {
-#       f_blue_green_name           = local.blue-green-deployment-name
-#       f_source_db                 = aws_db_instance.default.arn
-#       f_target_db_parameter_group = aws_db_instance.default.parameter_group_name
-#       f_region                    = local.region
-#       f_output                    = local.output
-#     }
-#   }
-# }
-
-# output "created_blue_green_deployment" {
-#   value = null_resource.name.triggers
-# }
 
 # # Describe  blue green deployment
 
