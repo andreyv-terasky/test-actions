@@ -28,7 +28,7 @@ resource "aws_db_instance" "default" {
   }
 }
 
-Create Blue Green Deployment
+# Create Blue Green Deployment
 
 resource "null_resource" "name" {
   depends_on = [
