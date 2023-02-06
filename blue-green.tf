@@ -8,6 +8,8 @@ locals {
   blue-green-deployment-name    = "my-blue-green-deployment"
   output                        = "json"
   //BlueGreenDeploymentIdentifier = aws_ssm_parameter.foo.value
+  BlueGreenDeploymentIdentifier = "bgd-o4sgvskqanbmk4xu"
+
 }
 
 
@@ -124,19 +126,19 @@ resource "aws_db_instance" "default" {
 
 # Delete Deployment
 
-# resource "null_resource" "delete" {
-#   provisioner "local-exec" {
-#     # For Non completed switch over
-#     command = "aws rds delete-blue-green-deployment --blue-green-deployment-identifier $f_BlueGreenDeploymentIdentifier --delete-target --region $f_region --output $f_output"
-#     environment = {
-#       f_BlueGreenDeploymentIdentifier = local.BlueGreenDeploymentIdentifier
-#       f_region                        = local.region
-#       f_output                        = local.output
-#     }
-#     # Forcompleted switch over
-#     //command = "aws rds delete-blue-green-deployment --blue-green-deployment-identifier $f_BlueGreenDeploymentIdentifier --no-delete-target --region eu-west-1 --output json"
-#   }
-# }
+resource "null_resource" "delete" {
+  provisioner "local-exec" {
+    # For Non completed switch over
+    command = "aws rds delete-blue-green-deployment --blue-green-deployment-identifier $f_BlueGreenDeploymentIdentifier --delete-target --region $f_region --output $f_output"
+    environment = {
+      f_BlueGreenDeploymentIdentifier = local.BlueGreenDeploymentIdentifier
+      f_region                        = local.region
+      f_output                        = local.output
+    }
+    # Forcompleted switch over
+    //command = "aws rds delete-blue-green-deployment --blue-green-deployment-identifier $f_BlueGreenDeploymentIdentifier --no-delete-target --region eu-west-1 --output json"
+  }
+}
 
 
 # Import Green (Old DB instnce)
