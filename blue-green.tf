@@ -65,7 +65,7 @@ output "output" {
   value = "${file("output.json")}"
 }
 
-output "output" {
+output "output1" {
   value = "${null_resource.output.output}"
 }
 
