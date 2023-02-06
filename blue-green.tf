@@ -49,31 +49,28 @@ resource "aws_db_instance" "default" {
 
 # Describe  blue green deployment
 
-resource "null_resource" "desccribe" {
-  provisioner "local-exec" {
-    //command = "aws rds describe-blue-green-deployments --filters Name=blue-green-deployment-name,Values=$f_blue_green_name --region $f_region --output $f_output"
-    command = "aws rds describe-blue-green-deployments --filters Name=blue-green-deployment-name,Values=$f_blue_green_name --region $f_region"
-    environment = {
-      f_blue_green_name           = local.blue-green-deployment-name
-      f_region                    = local.region
-      f_output                    = local.output
-     }
-  }
-}
+# resource "null_resource" "desccribe" {
+#   provisioner "local-exec" {
+#     //command = "aws rds describe-blue-green-deployments --filters Name=blue-green-deployment-name,Values=$f_blue_green_name --region $f_region --output $f_output"
+#     command = "aws rds describe-blue-green-deployments --filters Name=blue-green-deployment-name,Values=$f_blue_green_name --region $f_region"
+#     environment = {
+#       f_blue_green_name           = local.blue-green-deployment-name
+#       f_region                    = local.region
+#       f_output                    = local.output
+#      }
+#   }
+# }
 
-output "name_triggers" {
-  value = null_resource.desccribe.triggers
-}
-output "name_id" {
-  value = null_resource.desccribe.id
-}
+# output "name_triggers" {
+#   value = null_resource.desccribe.triggers
+# }
+# output "name_id" {
+#   value = null_resource.desccribe.id
+# }
 
 # # Create Parameter Store
 
 resource "aws_ssm_parameter" "foo" {
-  depends_on = [
-    null_resource.desccribe
-  ]
   name  = "blue-green-deployment"
   type  = "String"
   value = "test"
