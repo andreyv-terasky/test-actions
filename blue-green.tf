@@ -84,13 +84,8 @@ resource "aws_ssm_parameter" "foo" {
   
 }
 
-data "aws_ssm_parameter" "bgd_id" {
-  depends_on = [
-    aws_ssm_parameter.foo
-  ]
-  name = aws_ssm_parameter.foo.name
-  type = "StringList"
-  value = split(",", data.aws_ssm_parameter.foo.value)
+output "bgd" {
+  value = aws_ssm_parameter.foo.value.BlueGreenDeploymentIdentifier
 }
 
 
