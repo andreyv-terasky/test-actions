@@ -51,15 +51,15 @@ resource "null_resource" "create_bgd" {
 #   ]
 # }
 # Get BGD-ID
-locals {
-  create_bgd = {
-    bgd_id = jsondecode(data.local_file.bgd_id.content)["BlueGreenDeployment"]["BlueGreenDeploymentIdentifier"]
-  }
-}
-# Validate BGD-ID
-output "local_bgd_id" {
-  value = local.create_bgd.bgd_id
-}
+# locals {
+#   create_bgd = {
+#     bgd_id = jsondecode(data.local_file.bgd_id.content)["BlueGreenDeployment"]["BlueGreenDeploymentIdentifier"]
+#   }
+# }
+# # Validate BGD-ID
+# output "local_bgd_id" {
+#   value = local.create_bgd.bgd_id
+# }
 
 # Create AWS SSM Parameter store for bgd-id
 
