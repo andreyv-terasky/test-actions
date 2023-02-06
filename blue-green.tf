@@ -75,9 +75,13 @@ output "name" {
 # # Create Parameter Store
 
 resource "aws_ssm_parameter" "foo" {
+  depends_on = [
+    data.local_file.blja_blja
+  ]
   name  = "blue-green-deployment"
   type  = "StringList"
   value = data.local_file.blja_blja.content
+  insecure_value = "insecure_value"
 }
 
 
