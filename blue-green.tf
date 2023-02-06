@@ -70,11 +70,11 @@ output "name_id" {
 
 # # Create Parameter Store
 
-resource "aws_ssm_parameter" "foo" {
-  name  = "blue-green-deployment"
-  type  = "StringList"
-  value = "${file("./output.json")}"
-}
+# resource "aws_ssm_parameter" "foo" {
+#   name  = "blue-green-deployment"
+#   type  = "StringList"
+#   value = "${file("./output.json")}"
+# }
 
 
 # Switch over 
