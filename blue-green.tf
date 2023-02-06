@@ -44,29 +44,29 @@ resource "aws_ssm_parameter" "foo" {
 
 # Create Blue Green Deployment
 
-resource "null_resource" "create_bgd" {
-  provisioner "local-exec" {
-    command = "aws rds create-blue-green-deployment --blue-green-deployment-name $f_blue_green_name --source $f_source_db --target-db-parameter-group-name $f_target_db_parameter_group --output $f_output --region $f_region > bgd.json"
-    environment = {
-      f_blue_green_name           = local.blue-green-deployment-name
-      f_source_db                 = aws_db_instance.default.arn
-      f_target_db_parameter_group = aws_db_instance.default.parameter_group_name
-      f_region                    = local.region
-      f_output                    = local.output
-    }
-  }
-}
+# resource "null_resource" "create_bgd" {
+#   provisioner "local-exec" {
+#     command = "aws rds create-blue-green-deployment --blue-green-deployment-name $f_blue_green_name --source $f_source_db --target-db-parameter-group-name $f_target_db_parameter_group --output $f_output --region $f_region > bgd.json"
+#     environment = {
+#       f_blue_green_name           = local.blue-green-deployment-name
+#       f_source_db                 = aws_db_instance.default.arn
+#       f_target_db_parameter_group = aws_db_instance.default.parameter_group_name
+#       f_region                    = local.region
+#       f_output                    = local.output
+#     }
+#   }
+# }
 
-data "local_file" "bgd_id" {
-  filename = "${path.module}/bgd.json"
-  depends_on = [
-    null_resource.create_bgd
-  ]
-}
+# data "local_file" "bgd_id" {
+#   filename = "${path.module}/bgd.json"
+#   depends_on = [
+#     null_resource.create_bgd
+#   ]
+# }
 
-output "bgd" {
-  value = jsondecode(data.local_file.bgd_id.content)["BlueGreenDeployment"]["BlueGreenDeploymentIdentifier"]
-}
+# output "bgd" {
+#   value = jsondecode(data.local_file.bgd_id.content)["BlueGreenDeployment"]["BlueGreenDeploymentIdentifier"]
+# }
 
 # output "blue-green" {
 #   value = null_resource.name.triggers
