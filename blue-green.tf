@@ -7,7 +7,7 @@ locals {
   timeout                       = 600
   blue-green-deployment-name    = "my-blue-green-deployment"
   output                        = "json"
-  BlueGreenDeploymentIdentifier = aws_ssm_parameter.foo.value
+  //BlueGreenDeploymentIdentifier = aws_ssm_parameter.foo.value
 }
 
 
