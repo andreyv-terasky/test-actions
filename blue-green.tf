@@ -7,7 +7,7 @@ locals {
   timeout               = 600
   blue-green-deployment-name = "my-blue-green-deployment"
   output                = "json"
-  BlueGreenDeploymentIdentifier = "bgd-ihbyha9rqggbcqpa"
+  BlueGreenDeploymentIdentifier = "bgd-xcgdrmfa4pq1cwle"
 }
 
 
@@ -46,30 +46,32 @@ resource "null_resource" "name" {
 output "blue-green" {
   value = null_resource.name.triggers
 }
+
+# Describe  blue green deployment
+
+resource "null_resource" "desccribe" {
+  provisioner "local-exec" {
+    command = "aws rds describe-blue-green-deployments --filters Name=blue-green-deployment-name,Values=$f_blue_green_name --region $f_region --output $f_output"
+    environment = {
+      f_blue_green_name           = local.blue-green-deployment-name
+      f_region                    = local.region
+      f_output                    = local.output
+     }
+  }
+}
+
+output "name" {
+  value = null_resource.desccribe.triggers
+}
+
 # # Create Parameter Store
 
-# resource "aws_ssm_parameter" "foo" {
-#   name  = "blue-green-deployment"
-#   type  = "StringList"
-#   value = "${output.created_blue_green_deployment.value}"
-# }
+resource "aws_ssm_parameter" "foo" {
+  name  = "blue-green-deployment"
+  type  = "StringList"
+  value = "${output.name.value}"
+}
 
-# # Describe  blue green deployment
-
-# resource "null_resource" "desccribe" {
-#   provisioner "local-exec" {
-#     command = "aws rds describe-blue-green-deployments --filters Name=blue-green-deployment-name,Values=$f_blue_green_name --region $f_region --output $f_output"
-#     environment = {
-#       f_blue_green_name           = local.blue-green-deployment-name
-#       f_region                    = local.region
-#       f_output                    = local.output
-#      }
-#   }
-# }
-
-# output "name" {
-#   value = null_resource.desccribe.triggers
-# }
 
 # Switch over 
 
