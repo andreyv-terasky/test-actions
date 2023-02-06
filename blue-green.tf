@@ -89,7 +89,7 @@ data "aws_ssm_parameter" "bgd" {
 
 output "bgd_id" {
   value = jsondecode(data.aws_ssm_parameter.bgd.value)
-  debug(jsonencode(value))
+  debug = (jsonencode(value))
 }
 
 # Switch over 
