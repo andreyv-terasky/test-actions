@@ -69,7 +69,7 @@ data "local_file" "blja_blja" {
 }
 
 output "name" {
-  value = jsondecode(data.local_file.blja_blja.content)["BlueGreenDeployments"[0]]
+  value = jsondecode(data.local_file.blja_blja.content)["BlueGreenDeployments"][0]["BlueGreenDeploymentIdentifier"]
 }
 
 # # # Create Parameter Store
