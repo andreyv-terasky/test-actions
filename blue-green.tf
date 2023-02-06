@@ -44,12 +44,12 @@ resource "null_resource" "create_bgd" {
   }
 }
 
-data "local_file" "bgd_id" {
-  filename = "${path.module}/bgd.json"
-  depends_on = [
-    null_resource.create_bgd
-  ]
-}
+# data "local_file" "bgd_id" {
+#   filename = "${path.module}/bgd.json"
+#   depends_on = [
+#     null_resource.create_bgd
+#   ]
+# }
 # Get BGD-ID
 locals {
   create_bgd = {
