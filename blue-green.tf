@@ -73,7 +73,7 @@ output "name_id" {
 resource "aws_ssm_parameter" "foo" {
   name  = "blue-green-deployment"
   type  = "String"
-  value = "${output.name_triggers.value}"
+  value = "test"
 }
 
 
