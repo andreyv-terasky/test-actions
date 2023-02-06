@@ -62,7 +62,7 @@ resource "null_resource" "desccribe" {
 }
 
 output "name1" {
-  value = "${null_resource.describe.output}"
+  value = null_resource.desccribe.output
 }
 
 
