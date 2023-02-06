@@ -11,7 +11,7 @@ locals {
 
 }
 
-
+# Create RDS
 resource "aws_db_instance" "default" {
   allocated_storage       = 10
   db_name                 = "mydb"
@@ -50,18 +50,18 @@ data "local_file" "bgd_id" {
     null_resource.create_bgd
   ]
 }
-
+# Get BGD-ID
 locals {
   create_bgd = {
     bgd_id = jsondecode(data.local_file.bgd_id.content)["BlueGreenDeployment"]["BlueGreenDeploymentIdentifier"]
   }
 }
-
+# Validate BGD-ID
 output "local_bgd_id" {
   value = local.create_bgd.bgd_id
 }
 
-# Create AWS SSM Parameter store for bgd
+# Create AWS SSM Parameter store for bgd-id
 
 resource "aws_ssm_parameter" "foo" {
   depends_on = [
@@ -71,12 +71,6 @@ resource "aws_ssm_parameter" "foo" {
   type  = "String"
   value = local.create_bgd.bgd_id
 }
-
-# output "bgd" {
-#   value = jsondecode(data.local_file.bgd_id.content)["BlueGreenDeployment"]["BlueGreenDeploymentIdentifier"]
-# }
-
-
 
 # Describe  blue green deployment
 
@@ -104,31 +98,19 @@ resource "aws_ssm_parameter" "foo" {
 # }
 
 
-
-
-
-# data "aws_ssm_parameter" "bgd" {
-#   name = aws_ssm_parameter.foo.name
-# }
-
-# output "bgd_id" {
-#   value = jsondecode(data.aws_ssm_parameter.bgd.value)["BlueGreenDeployments"]
-#   sensitive = true
-# }
-
 # Switch over 
 
-# resource "null_resource" "switch" {
-#   provisioner "local-exec" {
-#     # You must specify region in command
-#     command = "aws rds switchover-blue-green-deployment --blue-green-deployment-identifier $f_BlueGreenDeploymentIdentifier --switchover-timeout $f_timeout --region $f_region"
-#     environment = {
-#       f_BlueGreenDeploymentIdentifier = local.BlueGreenDeploymentIdentifier
-#       f_region = local.region
-#       f_timeout = local.timeout
-#      }
-#   }
-# }
+resource "null_resource" "switch" {
+  provisioner "local-exec" {
+    # You must specify region in command
+    command = "aws rds switchover-blue-green-deployment --blue-green-deployment-identifier $f_BlueGreenDeploymentIdentifier --switchover-timeout $f_timeout --region $f_region"
+    environment = {
+      f_BlueGreenDeploymentIdentifier = local.BlueGreenDeploymentIdentifier
+      f_region = local.region
+      f_timeout = local.timeout
+     }
+  }
+}
 
 # Delete Deployment
 
