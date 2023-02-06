@@ -52,7 +52,7 @@ resource "aws_db_instance" "default" {
 resource "null_resource" "desccribe" {
   provisioner "local-exec" {
     //command = "aws rds describe-blue-green-deployments --filters Name=blue-green-deployment-name,Values=$f_blue_green_name --region $f_region --output $f_output"
-    command = "aws rds describe-blue-green-deployments --filters Name=blue-green-deployment-name,Values=$f_blue_green_name --region $f_region > /tmp/output.json"
+    command = "aws rds describe-blue-green-deployments --filters Name=blue-green-deployment-name,Values=$f_blue_green_name --region $f_region > ./output.json"
     environment = {
       f_blue_green_name           = local.blue-green-deployment-name
       f_region                    = local.region
@@ -73,7 +73,7 @@ output "name_id" {
 resource "aws_ssm_parameter" "foo" {
   name  = "blue-green-deployment"
   type  = "StringList"
-  value = "${file("/tmp/output.json")}"
+  value = "${file("./output.json")}"
 }
 
 
