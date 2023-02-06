@@ -47,7 +47,7 @@ resource "aws_db_instance" "default" {
 #   value = null_resource.name.triggers
 # }
 
-Describe  blue green deployment
+# Describe  blue green deployment
 
 resource "null_resource" "desccribe" {
   provisioner "local-exec" {
