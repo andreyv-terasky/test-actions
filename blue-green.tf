@@ -8,7 +8,7 @@ locals {
   blue-green-deployment-name    = "my-blue-green-deployment"
   output                        = "json"
   BlueGreenDeploymentIdentifier = jsondecode(data.local_file.bgd_id.content)["BlueGreenDeployment"]["BlueGreenDeploymentIdentifier"]
-  //BlueGreenDeploymentIdentifier = "bgd-qbu7sgtgcxeq1gbw"
+  
 
 }
 
@@ -126,19 +126,23 @@ output "bgd" {
 
 # Delete Deployment
 
-# resource "null_resource" "delete" {
-#   provisioner "local-exec" {
-#     # For Non completed switch over
-#     command = "aws rds delete-blue-green-deployment --blue-green-deployment-identifier $f_BlueGreenDeploymentIdentifier --delete-target --region $f_region --output $f_output"
-#     environment = {
-#       f_BlueGreenDeploymentIdentifier = local.BlueGreenDeploymentIdentifier
-#       f_region                        = local.region
-#       f_output                        = local.output
-#     }
-#     # Forcompleted switch over
-#     //command = "aws rds delete-blue-green-deployment --blue-green-deployment-identifier $f_BlueGreenDeploymentIdentifier --no-delete-target --region eu-west-1 --output json"
-#   }
-# }
+data "aws_ssm_parameter" "bgd_id" {
+  name = aws_ssm_parameter.foo.name
+}
+
+resource "null_resource" "delete" {
+  provisioner "local-exec" {
+    # For Non completed switch over
+    command = "aws rds delete-blue-green-deployment --blue-green-deployment-identifier $f_BlueGreenDeploymentIdentifier --delete-target --region $f_region --output $f_output"
+    environment = {
+      f_BlueGreenDeploymentIdentifier = data.aws_ssm_parameter.bgd_id.value
+      f_region                        = local.region
+      f_output                        = local.output
+    }
+    # Forcompleted switch over
+    //command = "aws rds delete-blue-green-deployment --blue-green-deployment-identifier $f_BlueGreenDeploymentIdentifier --no-delete-target --region eu-west-1 --output json"
+  }
+}
 
 
 # Import Green (Old DB instnce)
