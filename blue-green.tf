@@ -104,17 +104,17 @@ output "bgd_id" {
 
 # Switch over 
 
-# resource "null_resource" "switch" {
-#   provisioner "local-exec" {
-#     # You must specify region in command
-#     command = "aws rds switchover-blue-green-deployment --blue-green-deployment-identifier $f_BlueGreenDeploymentIdentifier --switchover-timeout $f_timeout --region $f_region"
-#     environment = {
-#       f_BlueGreenDeploymentIdentifier = local.bgd_id.id
-#       f_region = local.region
-#       f_timeout = local.timeout
-#      }
-#   }
-# }
+resource "null_resource" "switch" {
+  provisioner "local-exec" {
+    # You must specify region in command
+    command = "aws rds switchover-blue-green-deployment --blue-green-deployment-identifier $f_BlueGreenDeploymentIdentifier --switchover-timeout $f_timeout --region $f_region"
+    environment = {
+      f_BlueGreenDeploymentIdentifier = local.bgd_id.id
+      f_region = local.region
+      f_timeout = local.timeout
+     }
+  }
+}
 
 # Delete Deployment
 
