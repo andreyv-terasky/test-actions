@@ -83,13 +83,8 @@ resource "aws_ssm_parameter" "foo" {
   value = data.local_file.blja_blja.content  
 }
 
-data "aws_ssm_parameter" "bgd" {
-  name = aws_ssm_parameter.foo.name
-  value = aws_ssm_parameter.foo.value
-}
-
 output "bgd" {
-  value = split(",", data.aws_ssm_parameter.bgd.value.BlueGreenDeploymentIdentifier)
+  value = split(",", aws_ssm_parameter.foo.value.BlueGreenDeploymentIdentifier)
 }
 
 # Switch over 
