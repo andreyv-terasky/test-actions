@@ -7,8 +7,8 @@ locals {
   timeout                       = 600
   blue-green-deployment-name    = "my-blue-green-deployment"
   output                        = "json"
-  BlueGreenDeploymentIdentifier = jsondecode(data.local_file.bgd_id.content)["BlueGreenDeployment"]["BlueGreenDeploymentIdentifier"]
-  BlueGreenDeploymentIdentifier = 
+  //BlueGreenDeploymentIdentifier = jsondecode(data.local_file.bgd_id.content)["BlueGreenDeployment"]["BlueGreenDeploymentIdentifier"]
+  
 
 }
 
