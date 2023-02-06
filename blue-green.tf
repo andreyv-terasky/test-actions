@@ -63,7 +63,9 @@ resource "null_resource" "desccribe" {
 
 data "local_file" "blja_blja" {
     filename = "${path.module}/example.json"
-  depends_on = ["null_resource.describe"]
+  depends_on = [
+    null_resource.desccribe
+  ]
 }
 
 
