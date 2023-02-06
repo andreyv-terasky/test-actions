@@ -63,7 +63,7 @@ resource "null_resource" "desccribe" {
 
 
 output "example_output" {
-  value = "${file("example_output.json")}"
+  value = var.example_output
 }
 
 # # Create Parameter Store
