@@ -62,7 +62,7 @@ resource "null_resource" "desccribe" {
 }
 
 data "local_file" "blja_blja" {
-    filename = "${path.module}/example.json"
+    filename = jsonencode("${path.module}/example.json")
   depends_on = [
     null_resource.desccribe
   ]
@@ -87,10 +87,9 @@ data "aws_ssm_parameter" "bgd" {
   name = aws_ssm_parameter.foo.name
 }
 
-output "bgd_id" {
-  value = jsondecode(data.aws_ssm_parameter.bgd.value)
-  debug = (jsonencode(value))
-}
+# output "bgd_id" {
+#   value = jsondecode(data.aws_ssm_parameter.bgd.value)[]
+# }
 
 # Switch over 
 
