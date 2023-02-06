@@ -61,8 +61,12 @@ resource "null_resource" "desccribe" {
   }
 }
 
-output "name1" {
-  value = null_resource.desccribe.output
+output "output" {
+  value = "${file("output.json")}"
+}
+
+output "output" {
+  value = "${null_resource.output.output}"
 }
 
 
