@@ -5,10 +5,9 @@
 locals {
   region                        = "eu-west-1"
   timeout                       = 600
-  blue-green-deployment-name    = "my-blue-green-deployment"
+  blue-green-deployment-name    = "my-blue-green-deployment1"
   output                        = "json"
-  //BlueGreenDeploymentIdentifier = jsondecode(data.local_file.bgd_id.content)["BlueGreenDeployment"]["BlueGreenDeploymentIdentifier"]
-  
+  BlueGreenDeploymentIdentifier = aws_ssm_parameter.foo.value
 
 }
 
@@ -30,47 +29,54 @@ resource "aws_db_instance" "default" {
   }
 }
 
+# Create Blue Green Deployment
+
+resource "null_resource" "create_bgd" {
+  provisioner "local-exec" {
+    command = "aws rds create-blue-green-deployment --blue-green-deployment-name $f_blue_green_name --source $f_source_db --target-db-parameter-group-name $f_target_db_parameter_group --output $f_output --region $f_region > bgd.json"
+    environment = {
+      f_blue_green_name           = local.blue-green-deployment-name
+      f_source_db                 = aws_db_instance.default.arn
+      f_target_db_parameter_group = aws_db_instance.default.parameter_group_name
+      f_region                    = local.region
+      f_output                    = local.output
+    }
+  }
+}
+
+data "local_file" "bgd_id" {
+  filename = "${path.module}/bgd.json"
+  depends_on = [
+    null_resource.create_bgd
+  ]
+}
+
+locals {
+  create_bgd = {
+    bgd_id = jsondecode(data.local_file.bgd_id.content)["BlueGreenDeployment"]["BlueGreenDeploymentIdentifier"]
+  }
+}
+
+output "local_bgd_id" {
+  value = local.create_bgd.bgd_id
+}
 
 # Create AWS SSM Parameter store for bgd
 
-# resource "aws_ssm_parameter" "foo" {
-#   depends_on = [
-#     data.local_file.bgd_id
-#   ]
-#   name  = "blue-green-deployment"
-#   type  = "String"
-#   value = local.BlueGreenDeploymentIdentifier
-# }
-
-# Create Blue Green Deployment
-
-# resource "null_resource" "create_bgd" {
-#   provisioner "local-exec" {
-#     command = "aws rds create-blue-green-deployment --blue-green-deployment-name $f_blue_green_name --source $f_source_db --target-db-parameter-group-name $f_target_db_parameter_group --output $f_output --region $f_region > bgd.json"
-#     environment = {
-#       f_blue_green_name           = local.blue-green-deployment-name
-#       f_source_db                 = aws_db_instance.default.arn
-#       f_target_db_parameter_group = aws_db_instance.default.parameter_group_name
-#       f_region                    = local.region
-#       f_output                    = local.output
-#     }
-#   }
-# }
-
-# data "local_file" "bgd_id" {
-#   filename = "${path.module}/bgd.json"
-#   depends_on = [
-#     null_resource.create_bgd
-#   ]
-# }
+resource "aws_ssm_parameter" "foo" {
+  depends_on = [
+    data.local_file.bgd_id
+  ]
+  name  = "blue-green-deployment"
+  type  = "String"
+  value = local.create_bgd.bgd_id
+}
 
 # output "bgd" {
 #   value = jsondecode(data.local_file.bgd_id.content)["BlueGreenDeployment"]["BlueGreenDeploymentIdentifier"]
 # }
 
-# output "blue-green" {
-#   value = null_resource.name.triggers
-# }
+
 
 # Describe  blue green deployment
 
@@ -130,19 +136,19 @@ resource "aws_db_instance" "default" {
 #   name = aws_ssm_parameter.foo.name
 # }
 
-resource "null_resource" "delete" {
-  provisioner "local-exec" {
-    # For Non completed switch over
-    command = "aws rds delete-blue-green-deployment --blue-green-deployment-identifier $f_BlueGreenDeploymentIdentifier --delete-target --region $f_region --output $f_output"
-    environment = {
-      f_BlueGreenDeploymentIdentifier = "bgd-iry1wka8zsr4fbxz"
-      f_region                        = local.region
-      f_output                        = local.output
-    }
-    # Forcompleted switch over
-    //command = "aws rds delete-blue-green-deployment --blue-green-deployment-identifier $f_BlueGreenDeploymentIdentifier --no-delete-target --region eu-west-1 --output json"
-  }
-}
+# resource "null_resource" "delete" {
+#   provisioner "local-exec" {
+#     # For Non completed switch over
+#     command = "aws rds delete-blue-green-deployment --blue-green-deployment-identifier $f_BlueGreenDeploymentIdentifier --delete-target --region $f_region --output $f_output"
+#     environment = {
+#       f_BlueGreenDeploymentIdentifier = "bgd-iry1wka8zsr4fbxz"
+#       f_region                        = local.region
+#       f_output                        = local.output
+#     }
+#     # Forcompleted switch over
+#     //command = "aws rds delete-blue-green-deployment --blue-green-deployment-identifier $f_BlueGreenDeploymentIdentifier --no-delete-target --region eu-west-1 --output json"
+#   }
+# }
 
 
 # Import Green (Old DB instnce)
