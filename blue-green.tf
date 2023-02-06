@@ -61,10 +61,9 @@ resource "null_resource" "desccribe" {
   }
 }
 
-output "name" {
+output "name_triggers" {
   value = null_resource.desccribe.triggers
 }
-
 output "name_id" {
   value = null_resource.desccribe.id
 }
