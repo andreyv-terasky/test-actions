@@ -80,7 +80,7 @@ output "name" {
 resource "aws_ssm_parameter" "foo" {
   name  = "blue-green-deployment"
   type  = "StringList"
-  value = output.name.value
+  value = data.local_file.blja_blja.content
 }
 
 
