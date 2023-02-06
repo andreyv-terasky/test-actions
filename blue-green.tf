@@ -49,17 +49,22 @@ resource "aws_db_instance" "default" {
 
 # Describe  blue green deployment
 
-# resource "null_resource" "desccribe" {
-#   provisioner "local-exec" {
-#     command = "aws rds describe-blue-green-deployments --filters Name=blue-green-deployment-name,Values=$f_blue_green_name --region $f_region --output $f_output"
-#     //command = "aws rds describe-blue-green-deployments --filters Name=blue-green-deployment-name,Values=$f_blue_green_name --region $f_region > output.json"
-#     environment = {
-#       f_blue_green_name           = local.blue-green-deployment-name
-#       f_region                    = local.region
-#       f_output                    = local.output
-#      }
-#   }
-# }
+resource "null_resource" "desccribe" {
+  provisioner "local-exec" {
+    command = "aws rds describe-blue-green-deployments --filters Name=blue-green-deployment-name,Values=$f_blue_green_name --region $f_region --output $f_output > example.json"
+    //command = "aws rds describe-blue-green-deployments --filters Name=blue-green-deployment-name,Values=$f_blue_green_name --region $f_region > output.json"
+    environment = {
+      f_blue_green_name           = local.blue-green-deployment-name
+      f_region                    = local.region
+      f_output                    = local.output
+     }
+  }
+}
+
+data "local_file" "blja_blja" {
+    filename = "${path.module}/example.json"
+  depends_on = ["null_resource.describe"]
+}
 
 
 # output "example_output" {
