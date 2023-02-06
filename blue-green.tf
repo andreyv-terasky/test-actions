@@ -67,6 +67,9 @@ output "name" {
 # # Create Parameter Store
 
 resource "aws_ssm_parameter" "foo" {
+  depends_on = [
+    null_resource.desccribe
+  ]
   name  = "blue-green-deployment"
   type  = "StringList"
   value = "${null_resource.desccribe.triggers}"
