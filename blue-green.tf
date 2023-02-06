@@ -49,24 +49,22 @@ resource "aws_db_instance" "default" {
 
 # Describe  blue green deployment
 
-# resource "null_resource" "desccribe" {
-#   provisioner "local-exec" {
-#     command = "aws rds describe-blue-green-deployments --filters Name=blue-green-deployment-name,Values=$f_blue_green_name --region $f_region --output $f_output > output.json"
-#     //command = "aws rds describe-blue-green-deployments --filters Name=blue-green-deployment-name,Values=$f_blue_green_name --region $f_region > output.json"
-#     environment = {
-#       f_blue_green_name           = local.blue-green-deployment-name
-#       f_region                    = local.region
-#       f_output                    = local.output
-#      }
-#   }
-# }
+resource "null_resource" "desccribe" {
+  provisioner "local-exec" {
+    command = "aws rds describe-blue-green-deployments --filters Name=blue-green-deployment-name,Values=$f_blue_green_name --region $f_region --output $f_output > example_output.json"
+    //command = "aws rds describe-blue-green-deployments --filters Name=blue-green-deployment-name,Values=$f_blue_green_name --region $f_region > output.json"
+    environment = {
+      f_blue_green_name           = local.blue-green-deployment-name
+      f_region                    = local.region
+      f_output                    = local.output
+     }
+  }
+}
 
-# output "name_triggers" {
-#   value = null_resource.desccribe.triggers
-# }
-# output "name_id" {
-#   value = null_resource.desccribe.id
-# }
+
+output "example_output" {
+  value = "${file("example_output.json")}"
+}
 
 # # Create Parameter Store
 
