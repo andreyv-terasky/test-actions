@@ -85,7 +85,7 @@ resource "aws_ssm_parameter" "foo" {
 }
 
 output "bgd" {
-  value = aws_ssm_parameter.foo.value.BlueGreenDeploymentIdentifier
+  value = [aws_ssm_parameter.foo.value.BlueGreenDeploymentIdentifier]
 }
 
 
