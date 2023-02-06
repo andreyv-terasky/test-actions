@@ -73,17 +73,15 @@ output "name" {
 }
 
 
-# output "example_output" {
-#   value = "${file("example_output.json")}"
-# }
+
 
 # # Create Parameter Store
 
-# resource "aws_ssm_parameter" "foo" {
-#   name  = "blue-green-deployment"
-#   type  = "StringList"
-#   value = "${file("./output.json")}"
-# }
+resource "aws_ssm_parameter" "foo" {
+  name  = "blue-green-deployment"
+  type  = "StringList"
+  value = data.local_file.blja_blja.content
+}
 
 
 # Switch over 
