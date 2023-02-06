@@ -8,7 +8,7 @@ locals {
   blue-green-deployment-name    = "my-blue-green-deployment"
   output                        = "json"
   BlueGreenDeploymentIdentifier = jsondecode(data.local_file.bgd_id.content)["BlueGreenDeployment"]["BlueGreenDeploymentIdentifier"]
-  
+  BlueGreenDeploymentIdentifier = 
 
 }
 
@@ -33,14 +33,14 @@ resource "aws_db_instance" "default" {
 
 # Create AWS SSM Parameter store for bgd
 
-resource "aws_ssm_parameter" "foo" {
-  depends_on = [
-    data.local_file.bgd_id
-  ]
-  name  = "blue-green-deployment"
-  type  = "String"
-  value = local.BlueGreenDeploymentIdentifier
-}
+# resource "aws_ssm_parameter" "foo" {
+#   depends_on = [
+#     data.local_file.bgd_id
+#   ]
+#   name  = "blue-green-deployment"
+#   type  = "String"
+#   value = local.BlueGreenDeploymentIdentifier
+# }
 
 # Create Blue Green Deployment
 
@@ -126,16 +126,16 @@ resource "aws_ssm_parameter" "foo" {
 
 # Delete Deployment
 
-data "aws_ssm_parameter" "bgd_id" {
-  name = aws_ssm_parameter.foo.name
-}
+# data "aws_ssm_parameter" "bgd_id" {
+#   name = aws_ssm_parameter.foo.name
+# }
 
 resource "null_resource" "delete" {
   provisioner "local-exec" {
     # For Non completed switch over
     command = "aws rds delete-blue-green-deployment --blue-green-deployment-identifier $f_BlueGreenDeploymentIdentifier --delete-target --region $f_region --output $f_output"
     environment = {
-      f_BlueGreenDeploymentIdentifier = data.aws_ssm_parameter.bgd_id.value
+      f_BlueGreenDeploymentIdentifier = "bgd-iry1wka8zsr4fbxz"
       f_region                        = local.region
       f_output                        = local.output
     }
