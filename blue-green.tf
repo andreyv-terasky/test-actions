@@ -72,7 +72,7 @@ resource "aws_ssm_parameter" "foo" {
   ]
   name  = "blue-green-deployment"
   type  = "StringList"
-  value = "${null_resource.desccribe.triggers}"
+  value = ["${null_resource.desccribe.triggers}"]
 }
 
 
