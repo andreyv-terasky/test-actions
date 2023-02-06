@@ -29,40 +29,40 @@ resource "aws_db_instance" "default" {
 }
 
 
-# Create AWS SSM Parameter store ffor bgd
+# # Create AWS SSM Parameter store ffor bgd
 
-resource "aws_ssm_parameter" "foo" {
-  depends_on = [
-    data.local_file.bgd_id
-  ]
-  name  = "blue-green-deployment"
-  type  = "String"
-  value = jsondecode(data.local_file.bgd_id.content)["BlueGreenDeployments"][0]["BlueGreenDeploymentIdentifier"]
-}
+# resource "aws_ssm_parameter" "foo" {
+#   depends_on = [
+#     data.local_file.bgd_id
+#   ]
+#   name  = "blue-green-deployment"
+#   type  = "String"
+#   value = jsondecode(data.local_file.bgd_id.content)["BlueGreenDeployment"][0]["BlueGreenDeploymentIdentifier"]
+# }
 
 
 
-# Create Blue Green Deployment
+# # Create Blue Green Deployment
 
-resource "null_resource" "create_bgd" {
-  provisioner "local-exec" {
-    command = "aws rds create-blue-green-deployment --blue-green-deployment-name $f_blue_green_name --source $f_source_db --target-db-parameter-group-name $f_target_db_parameter_group --output $f_output --region $f_region > bgd.json"
-    environment = {
-      f_blue_green_name           = local.blue-green-deployment-name
-      f_source_db                 = aws_db_instance.default.arn
-      f_target_db_parameter_group = aws_db_instance.default.parameter_group_name
-      f_region                    = local.region
-      f_output                    = local.output
-    }
-  }
-}
+# resource "null_resource" "create_bgd" {
+#   provisioner "local-exec" {
+#     command = "aws rds create-blue-green-deployment --blue-green-deployment-name $f_blue_green_name --source $f_source_db --target-db-parameter-group-name $f_target_db_parameter_group --output $f_output --region $f_region > bgd.json"
+#     environment = {
+#       f_blue_green_name           = local.blue-green-deployment-name
+#       f_source_db                 = aws_db_instance.default.arn
+#       f_target_db_parameter_group = aws_db_instance.default.parameter_group_name
+#       f_region                    = local.region
+#       f_output                    = local.output
+#     }
+#   }
+# }
 
-data "local_file" "bgd_id" {
-  filename = "${path.module}/bgd.json"
-  depends_on = [
-    null_resource.create_bgd
-  ]
-}
+# data "local_file" "bgd_id" {
+#   filename = "${path.module}/bgd.json"
+#   depends_on = [
+#     null_resource.create_bgd
+#   ]
+# }
 
 
 
