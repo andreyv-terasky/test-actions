@@ -43,10 +43,9 @@ resource "null_resource" "name" {
   }
 }
 
-output "created_blue_green_deployment" {
+output "blue-green" {
   value = null_resource.name.triggers
 }
-
 # # Create Parameter Store
 
 # resource "aws_ssm_parameter" "foo" {
