@@ -3,11 +3,11 @@
 ################################################################################ 
 
 locals {
-  region                = "eu-west-1"
-  timeout               = 600
-  blue-green-deployment-name = "my-blue-green-deployment"
-  output                = "json"
-  BlueGreenDeploymentIdentifier = "bgd-xcgdrmfa4pq1cwle"
+  region                        = "eu-west-1"
+  timeout                       = 600
+  blue-green-deployment-name    = "my-blue-green-deployment"
+  output                        = "json"
+  BlueGreenDeploymentIdentifier = aws_ssm_parameter.foo.value
 }
 
 
@@ -28,20 +28,43 @@ resource "aws_db_instance" "default" {
   }
 }
 
+
+# Create AWS SSM Parameter store ffor bgd
+
+resource "aws_ssm_parameter" "foo" {
+  depends_on = [
+    data.local_file.bgd_id
+  ]
+  name  = "blue-green-deployment"
+  type  = "String"
+  value = jsondecode(data.local_file.bgd_id.content)["BlueGreenDeployments"][0]["BlueGreenDeploymentIdentifier"]
+}
+
+
+
 # Create Blue Green Deployment
 
-# resource "null_resource" "name" {
-#   provisioner "local-exec" {
-#     command = "aws rds create-blue-green-deployment --blue-green-deployment-name $f_blue_green_name --source $f_source_db --target-db-parameter-group-name $f_target_db_parameter_group --output $f_output --region $f_region"
-#     environment = {
-#       f_blue_green_name           = local.blue-green-deployment-name
-#       f_source_db                 = aws_db_instance.default.arn
-#       f_target_db_parameter_group = aws_db_instance.default.parameter_group_name
-#       f_region                    = local.region
-#       f_output                    = local.output
-#     }
-#   }
-# }
+resource "null_resource" "create_bgd" {
+  provisioner "local-exec" {
+    command = "aws rds create-blue-green-deployment --blue-green-deployment-name $f_blue_green_name --source $f_source_db --target-db-parameter-group-name $f_target_db_parameter_group --output $f_output --region $f_region > bgd.json"
+    environment = {
+      f_blue_green_name           = local.blue-green-deployment-name
+      f_source_db                 = aws_db_instance.default.arn
+      f_target_db_parameter_group = aws_db_instance.default.parameter_group_name
+      f_region                    = local.region
+      f_output                    = local.output
+    }
+  }
+}
+
+data "local_file" "bgd_id" {
+  filename = "${path.module}/bgd.json"
+  depends_on = [
+    null_resource.create_bgd
+  ]
+}
+
+
 
 # output "blue-green" {
 #   value = null_resource.name.triggers
@@ -72,16 +95,9 @@ resource "aws_db_instance" "default" {
 #   value = jsondecode(data.local_file.blja_blja.content)["BlueGreenDeployments"][0]["BlueGreenDeploymentIdentifier"]
 # }
 
-# # # Create Parameter Store
 
-# resource "aws_ssm_parameter" "foo" {
-#   depends_on = [
-#     data.local_file.blja_blja
-#   ]
-#   name  = "blue-green-deployment"
-#   type  = "StringList"
-#   value = data.local_file.blja_blja.content  
-# }
+
+
 
 # data "aws_ssm_parameter" "bgd" {
 #   name = aws_ssm_parameter.foo.name
