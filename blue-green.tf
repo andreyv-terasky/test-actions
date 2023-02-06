@@ -68,6 +68,10 @@ data "local_file" "blja_blja" {
   ]
 }
 
+output "name" {
+  value = data.local_file.blja_blja.content
+}
+
 
 # output "example_output" {
 #   value = "${file("example_output.json")}"
