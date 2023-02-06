@@ -51,8 +51,8 @@ resource "aws_db_instance" "default" {
 
 resource "null_resource" "desccribe" {
   provisioner "local-exec" {
-    //command = "aws rds describe-blue-green-deployments --filters Name=blue-green-deployment-name,Values=$f_blue_green_name --region $f_region --output $f_output"
-    command = "aws rds describe-blue-green-deployments --filters Name=blue-green-deployment-name,Values=$f_blue_green_name --region $f_region > ./output.json"
+    command = "aws rds describe-blue-green-deployments --filters Name=blue-green-deployment-name,Values=$f_blue_green_name --region $f_region --output $f_output > output.json"
+    //command = "aws rds describe-blue-green-deployments --filters Name=blue-green-deployment-name,Values=$f_blue_green_name --region $f_region > output.json"
     environment = {
       f_blue_green_name           = local.blue-green-deployment-name
       f_region                    = local.region
@@ -61,12 +61,17 @@ resource "null_resource" "desccribe" {
   }
 }
 
-output "name_triggers" {
-  value = null_resource.desccribe.triggers
+output "name1" {
+  value = "${null_resource.describe.output}"
 }
-output "name_id" {
-  value = null_resource.desccribe.id
-}
+
+
+# output "name_triggers" {
+#   value = null_resource.desccribe.triggers
+# }
+# output "name_id" {
+#   value = null_resource.desccribe.id
+# }
 
 # # Create Parameter Store
 
