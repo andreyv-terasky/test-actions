@@ -88,7 +88,7 @@ data "aws_ssm_parameter" "bgd" {
 }
 
 output "bgd_id" {
-  value = jsoncode(data.aws_ssm_parameter.bgd.value)["BlueGreenDeploymentIdentifier"]
+  value = jsondecode(data.aws_ssm_parameter.bgd.value)["BlueGreenDeploymentIdentifier"]
 }
 
 # Switch over 
