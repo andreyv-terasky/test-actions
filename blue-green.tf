@@ -30,28 +30,29 @@ resource "aws_db_instance" "default" {
 
 # Create Blue Green Deployment
 
-resource "null_resource" "name" {
-  provisioner "local-exec" {
-    command = "aws rds create-blue-green-deployment --blue-green-deployment-name $f_blue_green_name --source $f_source_db --target-db-parameter-group-name $f_target_db_parameter_group --output $f_output --region $f_region"
-    environment = {
-      f_blue_green_name           = local.blue-green-deployment-name
-      f_source_db                 = aws_db_instance.default.arn
-      f_target_db_parameter_group = aws_db_instance.default.parameter_group_name
-      f_region                    = local.region
-      f_output                    = local.output
-    }
-  }
-}
+# resource "null_resource" "name" {
+#   provisioner "local-exec" {
+#     command = "aws rds create-blue-green-deployment --blue-green-deployment-name $f_blue_green_name --source $f_source_db --target-db-parameter-group-name $f_target_db_parameter_group --output $f_output --region $f_region"
+#     environment = {
+#       f_blue_green_name           = local.blue-green-deployment-name
+#       f_source_db                 = aws_db_instance.default.arn
+#       f_target_db_parameter_group = aws_db_instance.default.parameter_group_name
+#       f_region                    = local.region
+#       f_output                    = local.output
+#     }
+#   }
+# }
 
-output "blue-green" {
-  value = null_resource.name.triggers
-}
+# output "blue-green" {
+#   value = null_resource.name.triggers
+# }
 
 # Describe  blue green deployment
 
 resource "null_resource" "desccribe" {
   provisioner "local-exec" {
-    command = "aws rds describe-blue-green-deployments --filters Name=blue-green-deployment-name,Values=$f_blue_green_name --region $f_region --output $f_output"
+    //command = "aws rds describe-blue-green-deployments --filters Name=blue-green-deployment-name,Values=$f_blue_green_name --region $f_region --output $f_output"
+    command = "aws rds describe-blue-green-deployments --filters Name=blue-green-deployment-name,Values=$f_blue_green_name --region $f_region"
     environment = {
       f_blue_green_name           = local.blue-green-deployment-name
       f_region                    = local.region
@@ -62,6 +63,10 @@ resource "null_resource" "desccribe" {
 
 output "name" {
   value = null_resource.desccribe.triggers
+}
+
+output "name_id" {
+  value = null_resource.desccribe.id
 }
 
 # # Create Parameter Store
