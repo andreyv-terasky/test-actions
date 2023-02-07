@@ -66,7 +66,7 @@
 #   }
 # }
 
-# data "local_file" "blja_blja" {
+# data "local_file" "example" {
 #   filename = "${path.module}/example.json"
 #   depends_on = [
 #     null_resource.desccribe
@@ -75,7 +75,7 @@
 
 # locals {
 #   bgd_id = {
-#     id = jsondecode(data.local_file.blja_blja.content)["BlueGreenDeployments"][0]["BlueGreenDeploymentIdentifier"]
+#     id = jsondecode(data.local_file.example.content)["BlueGreenDeployments"][0]["BlueGreenDeploymentIdentifier"]
 #   }
 # }
 
