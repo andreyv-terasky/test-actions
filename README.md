@@ -19,3 +19,4 @@
     5. Uncomment delete block "Delete Deployment":
         1. If you did a switch-over you need run with --no-delete-target parameter (Not deleting green)
         2. If you didn't a switch-over you need run with --delete-target parameter (Deleting green)
+    6. Run terraform.

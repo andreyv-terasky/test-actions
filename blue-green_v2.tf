@@ -54,34 +54,34 @@ resource "aws_db_instance" "default" {
 # Describe - get bgd-id 
 ################################################################################
 
-# resource "null_resource" "desccribe" {
-#   provisioner "local-exec" {
-#     command = "aws rds describe-blue-green-deployments --filters Name=blue-green-deployment-name,Values=$f_blue_green_name --region $f_region --output $f_output > example.json"
-#     //command = "aws rds describe-blue-green-deployments --filters Name=blue-green-deployment-name,Values=$f_blue_green_name --region $f_region > output.json"
-#     environment = {
-#       f_blue_green_name = local.blue-green-deployment-name
-#       f_region          = local.region
-#       f_output          = local.output
-#     }
-#   }
-# }
+resource "null_resource" "desccribe" {
+  provisioner "local-exec" {
+    command = "aws rds describe-blue-green-deployments --filters Name=blue-green-deployment-name,Values=$f_blue_green_name --region $f_region --output $f_output > example.json"
+    //command = "aws rds describe-blue-green-deployments --filters Name=blue-green-deployment-name,Values=$f_blue_green_name --region $f_region > output.json"
+    environment = {
+      f_blue_green_name = local.blue-green-deployment-name
+      f_region          = local.region
+      f_output          = local.output
+    }
+  }
+}
 
-# data "local_file" "example" {
-#   filename = "${path.module}/example.json"
-#   depends_on = [
-#     null_resource.desccribe
-#   ]
-# }
+data "local_file" "example" {
+  filename = "${path.module}/example.json"
+  depends_on = [
+    null_resource.desccribe
+  ]
+}
 
-# locals {
-#   bgd_id = {
-#     id = jsondecode(data.local_file.example.content)["BlueGreenDeployments"][0]["BlueGreenDeploymentIdentifier"]
-#   }
-# }
+locals {
+  bgd_id = {
+    id = jsondecode(data.local_file.example.content)["BlueGreenDeployments"][0]["BlueGreenDeploymentIdentifier"]
+  }
+}
 
-# output "bgd_id" {
-#   value = local.bgd_id.id
-# }
+output "bgd_id" {
+  value = local.bgd_id.id
+}
 
 
 ################################################################################
@@ -103,19 +103,19 @@ resource "aws_db_instance" "default" {
 # # Delete Deployment
 # ################################################################################
 
-# resource "null_resource" "delete" {
-#   provisioner "local-exec" {
-#     # For Non completed switch over
-#     command = "aws rds delete-blue-green-deployment --blue-green-deployment-identifier $f_BlueGreenDeploymentIdentifier --delete-target --region $f_region --output $f_output"
-#     environment = {
-#       f_BlueGreenDeploymentIdentifier = local.bgd_id.id
-#       f_region                        = local.region
-#       f_output                        = local.output
-#     }
-#     # Forcompleted switch over
-#     //command = "aws rds delete-blue-green-deployment --blue-green-deployment-identifier $f_BlueGreenDeploymentIdentifier --no-delete-target --region eu-west-1 --output json"
-#   }
-# }
+resource "null_resource" "delete" {
+  provisioner "local-exec" {
+    # For Non completed switch over
+    //command = "aws rds delete-blue-green-deployment --blue-green-deployment-identifier $f_BlueGreenDeploymentIdentifier --delete-target --region $f_region --output $f_output"
+    environment = {
+      f_BlueGreenDeploymentIdentifier = local.bgd_id.id
+      f_region                        = local.region
+      f_output                        = local.output
+    }
+    # For completed switch over
+    command = "aws rds delete-blue-green-deployment --blue-green-deployment-identifier $f_BlueGreenDeploymentIdentifier --no-delete-target --region eu-west-1 --output json"
+  }
+}
 
 
 # # Import Green (Old DB instnce)
