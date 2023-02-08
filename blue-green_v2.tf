@@ -2,12 +2,12 @@
 # # Create Blue Green Deployment for RDS
 # ################################################################################ 
 
-# locals {
-#   region                     = "eu-west-1"
-#   timeout                    = 600
-#   blue-green-deployment-name = "my-blue-green-deployment1"
-#   output                     = "json"
-# }
+locals {
+  region                     = "eu-west-1"
+  timeout                    = 600
+  blue-green-deployment-name = "my-blue-green-deployment1"
+  output                     = "json"
+}
 
 
 
