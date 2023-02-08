@@ -8,7 +8,7 @@
 2. To perform switch over deployment you need:
     1. Comment create block "Create - Blue Green Environment".
     2. Uncomment describe block "Describe - get bgd-id".
-    3. Uncomment switch block "Switch Over - Switch green(stage) with blue(production".
+    3. Uncomment switch block "Switch Over - Switch green(stage) with blue(production)".
     4. Run terraform.
 
 3. To Delete blue/green environmnet you need:
