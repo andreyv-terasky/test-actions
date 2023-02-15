@@ -37,85 +37,85 @@ resource "aws_db_instance" "default" {
 # # Create - Blue Green Environment
 # ################################################################################ 
 
-resource "null_resource" "create_bgd" {
-  provisioner "local-exec" {
-    command = "aws rds create-blue-green-deployment --blue-green-deployment-name $f_blue_green_name --source $f_source_db --target-db-parameter-group-name $f_target_db_parameter_group --output $f_output --region $f_region"
-    environment = {
-      f_blue_green_name           = local.blue-green-deployment-name
-      f_source_db                 = aws_db_instance.default.arn
-      f_target_db_parameter_group = aws_db_instance.default.parameter_group_name
-      f_region                    = local.region
-      f_output                    = local.output
-    }
-  }
-}
+# resource "null_resource" "create_bgd" {
+#   provisioner "local-exec" {
+#     command = "aws rds create-blue-green-deployment --blue-green-deployment-name $f_blue_green_name --source $f_source_db --target-db-parameter-group-name $f_target_db_parameter_group --output $f_output --region $f_region"
+#     environment = {
+#       f_blue_green_name           = local.blue-green-deployment-name
+#       f_source_db                 = aws_db_instance.default.arn
+#       f_target_db_parameter_group = aws_db_instance.default.parameter_group_name
+#       f_region                    = local.region
+#       f_output                    = local.output
+#     }
+#   }
+# }
 
 ################################################################################
 # Describe - get bgd-id 
 ################################################################################
 
-resource "null_resource" "desccribe" {
-  provisioner "local-exec" {
-    command = "aws rds describe-blue-green-deployments --filters Name=blue-green-deployment-name,Values=$f_blue_green_name --region $f_region --output $f_output > example.json"
-    //command = "aws rds describe-blue-green-deployments --filters Name=blue-green-deployment-name,Values=$f_blue_green_name --region $f_region > output.json"
-    environment = {
-      f_blue_green_name = local.blue-green-deployment-name
-      f_region          = local.region
-      f_output          = local.output
-    }
-  }
-}
+# resource "null_resource" "desccribe" {
+#   provisioner "local-exec" {
+#     command = "aws rds describe-blue-green-deployments --filters Name=blue-green-deployment-name,Values=$f_blue_green_name --region $f_region --output $f_output > example.json"
+#     //command = "aws rds describe-blue-green-deployments --filters Name=blue-green-deployment-name,Values=$f_blue_green_name --region $f_region > output.json"
+#     environment = {
+#       f_blue_green_name = local.blue-green-deployment-name
+#       f_region          = local.region
+#       f_output          = local.output
+#     }
+#   }
+# }
 
-data "local_file" "example" {
-  filename = "${path.module}/example.json"
-  depends_on = [
-    null_resource.desccribe
-  ]
-}
+# data "local_file" "example" {
+#   filename = "${path.module}/example.json"
+#   depends_on = [
+#     null_resource.desccribe
+#   ]
+# }
 
-locals {
-  bgd_id = {
-    id = jsondecode(data.local_file.example.content)["BlueGreenDeployments"][0]["BlueGreenDeploymentIdentifier"]
-  }
-}
+# locals {
+#   bgd_id = {
+#     id = jsondecode(data.local_file.example.content)["BlueGreenDeployments"][0]["BlueGreenDeploymentIdentifier"]
+#   }
+# }
 
-output "bgd_id" {
-  value = local.bgd_id.id
-}
+# output "bgd_id" {
+#   value = local.bgd_id.id
+# }
 
 
 ################################################################################
 # Switch Over - Switch green(stage) with blue(production)
 ################################################################################
 
-resource "null_resource" "switch" {
-  provisioner "local-exec" {
-    command = "aws rds switchover-blue-green-deployment --blue-green-deployment-identifier $f_BlueGreenDeploymentIdentifier --switchover-timeout $f_timeout --region $f_region"
-    environment = {
-      f_BlueGreenDeploymentIdentifier = local.bgd_id.id
-      f_region = local.region
-      f_timeout = local.timeout
-     }
-  }
-}
+# resource "null_resource" "switch" {
+#   provisioner "local-exec" {
+#     command = "aws rds switchover-blue-green-deployment --blue-green-deployment-identifier $f_BlueGreenDeploymentIdentifier --switchover-timeout $f_timeout --region $f_region"
+#     environment = {
+#       f_BlueGreenDeploymentIdentifier = local.bgd_id.id
+#       f_region = local.region
+#       f_timeout = local.timeout
+#      }
+#   }
+# }
 
 # ################################################################################
 # # Delete Deployment
 # ################################################################################
 
-resource "null_resource" "delete" {
-  provisioner "local-exec" {
-    # For Non completed switch over
-    //command = "aws rds delete-blue-green-deployment --blue-green-deployment-identifier $f_BlueGreenDeploymentIdentifier --delete-target --region $f_region --output $f_output"
-    environment = {
-      f_BlueGreenDeploymentIdentifier = local.bgd_id.id
-      f_region                        = local.region
-      f_output                        = local.output
-    }
-    # For completed switch over
-    command = "aws rds delete-blue-green-deployment --blue-green-deployment-identifier $f_BlueGreenDeploymentIdentifier --no-delete-target --region eu-west-1 --output json"
-  }
-}
+# resource "null_resource" "delete" {
+#   provisioner "local-exec" {
+#     # For Non completed switch over
+#     //command = "aws rds delete-blue-green-deployment --blue-green-deployment-identifier $f_BlueGreenDeploymentIdentifier --delete-target --region $f_region --output $f_output"
+#     environment = {
+#       f_BlueGreenDeploymentIdentifier = local.bgd_id.id
+#       f_region                        = local.region
+#       f_output                        = local.output
+#     }
+#     # For completed switch over
+#     command = "aws rds delete-blue-green-deployment --blue-green-deployment-identifier $f_BlueGreenDeploymentIdentifier --no-delete-target --region eu-west-1 --output json"
+#   }
+# }
 
 
 # # Import Green (Old DB instnce)
