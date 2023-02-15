@@ -16,22 +16,22 @@ locals {
 # # Create RDS
 # ################################################################################ 
 
-resource "aws_db_instance" "default" {
-  allocated_storage       = 10
-  db_name                 = "mydb"
-  engine                  = "mysql"
-  engine_version          = "5.7"
-  instance_class          = "db.t3.micro"
-  username                = "admin"
-  password                = "Andrey90!"
-  parameter_group_name    = "default.mysql5.7"
-  skip_final_snapshot     = true
-  backup_retention_period = 1
-  backup_window           = "09:00-10:00"
-  blue_green_update {
-    enabled = true
-  }
-}
+# resource "aws_db_instance" "default" {
+#   allocated_storage       = 10
+#   db_name                 = "mydb"
+#   engine                  = "mysql"
+#   engine_version          = "5.7"
+#   instance_class          = "db.t3.micro"
+#   username                = "admin"
+#   password                = "Andrey90!"
+#   parameter_group_name    = "default.mysql5.7"
+#   skip_final_snapshot     = true
+#   backup_retention_period = 1
+#   backup_window           = "09:00-10:00"
+#   blue_green_update {
+#     enabled = true
+#   }
+# }
 
 # ################################################################################
 # # Create - Blue Green Environment
