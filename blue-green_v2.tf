@@ -103,19 +103,19 @@ resource "null_resource" "switch" {
 # # Delete Deployment
 # ################################################################################
 
-# resource "null_resource" "delete" {
-#   provisioner "local-exec" {
-#     # For Non completed switch over
-#     //command = "aws rds delete-blue-green-deployment --blue-green-deployment-identifier $f_BlueGreenDeploymentIdentifier --delete-target --region $f_region --output $f_output"
-#     environment = {
-#       f_BlueGreenDeploymentIdentifier = local.bgd_id.id
-#       f_region                        = local.region
-#       f_output                        = local.output
-#     }
-#     # For completed switch over
-#     command = "aws rds delete-blue-green-deployment --blue-green-deployment-identifier $f_BlueGreenDeploymentIdentifier --no-delete-target --region eu-west-1 --output json"
-#   }
-# }
+resource "null_resource" "delete" {
+  provisioner "local-exec" {
+    # For Non completed switch over
+    //command = "aws rds delete-blue-green-deployment --blue-green-deployment-identifier $f_BlueGreenDeploymentIdentifier --delete-target --region $f_region --output $f_output"
+    environment = {
+      f_BlueGreenDeploymentIdentifier = local.bgd_id.id
+      f_region                        = local.region
+      f_output                        = local.output
+    }
+    # For completed switch over
+    command = "aws rds delete-blue-green-deployment --blue-green-deployment-identifier $f_BlueGreenDeploymentIdentifier --no-delete-target --region eu-west-1 --output json"
+  }
+}
 
 
 # # Import Green (Old DB instnce)
